@@ -1,0 +1,25 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class CoinPickUp : MonoBehaviour
+{
+    [SerializeField] AudioClip coinPickupSFX;
+    [SerializeField] int pointsForCoinPickup = 10;
+
+    //A fail safe to make sure the player doesnt pick up the coin multiple times
+    bool wasCollected = false;
+
+    //When the player hits the collider of the coin then the player will pick it up and add the amount score to scoreText in GameSession
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.tag == "Player" && !wasCollected)
+        {
+            wasCollected = true;
+            FindObjectOfType<GameSession>().AddToScore(pointsForCoinPickup);
+            AudioSource.PlayClipAtPoint(coinPickupSFX, Camera.main.transform.position);
+            gameObject.SetActive(false);
+            Destroy(gameObject);
+        }
+    }
+}
